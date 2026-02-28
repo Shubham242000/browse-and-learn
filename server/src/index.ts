@@ -2,6 +2,7 @@ import "dotenv/config";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { detectTopicsRoute } from "./routes/detectTopics";
+import { skillsRoute } from "./routes/skills";
 
 const app = Fastify({ logger: true });
 
@@ -11,6 +12,7 @@ async function bootstrap() {
   app.get("/health", async () => ({ ok: true }));
 
   await app.register(detectTopicsRoute);
+  await app.register(skillsRoute);
 
   await app.listen({ port: 3000 });
 }
