@@ -1,25 +1,16 @@
-export function buildPrompt(pageText: string, profile: any) {
-  const ratingsString = Object.entries(profile.ratings)
-    .map(([skill, score]) => `${skill}: ${score}/10`)
-    .join("\n");
-
+export function buildTopicPrompt(pageText: string) {
   return `
-            You are an adaptive learning assistant.
+You are a technical topic extraction system.
 
-            User profile:
-            Role: ${profile.role}
-            Domain: ${profile.domain}
+Task:
+Extract 1 to 6 concise technical topics required to understand the article below.
 
-            Skill Ratings:
-            ${ratingsString}
+Return ONLY valid JSON:
+{
+  "topics": ["Topic1", "Topic2"]
+}
 
-            Instructions:
-            - Adjust explanation depth based on skill ratings.
-            - If rating < 5 → explain fundamentals.
-            - If rating 5–7 → moderate depth.
-            - If rating > 7 → skip basics, go deeper.
-
-            Page content:
-            ${pageText}
-            `;
+Article:
+${pageText}
+`;
 }
