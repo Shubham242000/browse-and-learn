@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Adaptive AI",
+  "version": "0.1.0",
+  "description": "Skill-aware page summarizer",
+
+  "action": {
+    "default_title": "Summarize"
+  },
+
+  "side_panel": {
+    "default_path": "index.html"
+  },
+
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "sidePanel",
+    "identity"
+  ],
+
+  "host_permissions": [
+    "<all_urls>",
+    "http://localhost:3000/*",
+    "https://accounts.google.com/*"
+  ],
+
+  "background": {
+    "service_worker": "src/background/index.ts",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/extract.ts"]
+    }
+  ]
+}

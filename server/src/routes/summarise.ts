@@ -2,6 +2,8 @@ import { FastifyInstance } from "fastify";
 import { generateSummaryStream } from "../services/summaryGenerator";
 import { getUserSkills } from "../services/skillService";
 import { z } from "zod";
+import { authMiddleware } from "../middleware/auth";
+import { createHistoryEntry } from "../services/historyService";
 
 const RequestSchema = z.object({
   pageText: z.string().min(50),
@@ -9,7 +11,10 @@ const RequestSchema = z.object({
 });
 
 export async function summarizeRoute(app: FastifyInstance) {
-  app.post("/summarize/stream", async (request, reply) => {
+  app.post(
+    "/summarize/stream",
+    { preHandler: authMiddleware },
+    async (request, reply) => {
     const parsed = RequestSchema.safeParse(request.body);
 
     if (!parsed.success) {
@@ -18,7 +23,7 @@ export async function summarizeRoute(app: FastifyInstance) {
 
     const { pageText, topics } = parsed.data;
 
-    const userId = "dev-user-1";
+    const userId = (request as any).user.userId;
 
     const ratings = await getUserSkills(userId);
 
@@ -41,6 +46,8 @@ export async function summarizeRoute(app: FastifyInstance) {
         }
       );
 
+      await createHistoryEntry(userId, topics, result);
+
       sendEvent("done", result);
 
       reply.raw.end();
@@ -49,5 +56,6 @@ export async function summarizeRoute(app: FastifyInstance) {
       sendEvent("error", { message: "Summary failed" });
       reply.raw.end();
     }
-  });
+    }
+  );
 }
