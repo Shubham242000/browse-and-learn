@@ -1,9 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { SkillRequestSchema } from "../schema/skillSchema";
 import { getUserSkills, upsertSkill } from "../services/skillService";
+import { authMiddleware } from "../middleware/auth";
 
 export async function skillsRoute(app: FastifyInstance) {
-  app.post("/skills", async (request, reply) => {
+  app.post("/skills", { preHandler: authMiddleware }, async (request, reply) => {
     const parsed = SkillRequestSchema.safeParse(request.body);
 
     if (!parsed.success) {
@@ -11,8 +12,7 @@ export async function skillsRoute(app: FastifyInstance) {
     }
 
     try {
-      // TEMP: mock userId until auth implemented
-      const userId = "dev-user-1";
+      const userId = (request as any).user.userId;
 
       const { skillName, rating } = parsed.data;
 
@@ -26,9 +26,9 @@ export async function skillsRoute(app: FastifyInstance) {
   });
 
 
-  app.get("/skills", async (request, reply) => {
+  app.get("/skills", { preHandler: authMiddleware }, async (request, reply) => {
     try {
-      const userId = "dev-user-1";
+      const userId = (request as any).user.userId;
 
       const skills = await getUserSkills(userId);
 
@@ -39,4 +39,3 @@ export async function skillsRoute(app: FastifyInstance) {
     }
   });
 }
-

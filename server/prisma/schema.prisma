@@ -7,10 +7,11 @@ datasource db {
 }
 
 model User {
-  id        String       @id @default(uuid())
-  email     String       @unique
-  createdAt DateTime     @default(now())
-  skills    UserSkill[]
+  id       String           @id @default(uuid())
+  email    String           @unique
+  createdAt DateTime        @default(now())
+  skills   UserSkill[]
+  history  SummaryHistory[]
 }
 
 model UserSkill {
@@ -25,4 +26,16 @@ model UserSkill {
   @@unique([userId, skillName])
   @@index([userId])
   @@index([skillName])
+}
+
+model SummaryHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  topics    Json
+  result    Json
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt(sort: Desc)])
 }

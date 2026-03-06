@@ -4,6 +4,8 @@ import cors from "@fastify/cors";
 import { detectTopicsRoute } from "./routes/detectTopics";
 import { skillsRoute } from "./routes/skills";
 import { summarizeRoute } from "./routes/summarise";
+import { authRoutes } from "./routes/auth";
+import { historyRoute } from "./routes/history";
 
 const app = Fastify({ logger: true });
 
@@ -15,6 +17,8 @@ async function bootstrap() {
   await app.register(detectTopicsRoute);
   await app.register(skillsRoute);
   await app.register(summarizeRoute);
+  await app.register(historyRoute);
+  await app.register(authRoutes);
 
   await app.listen({ port: 3000 });
 }
