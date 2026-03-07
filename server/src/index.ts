@@ -10,6 +10,7 @@ import { historyRoute } from "./routes/history";
 const app = Fastify({ logger: true });
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+const host = process.env.HOST || "0.0.0.0";
 
 async function bootstrap() {
   await app.register(cors, { origin: true });
@@ -22,7 +23,7 @@ async function bootstrap() {
   await app.register(historyRoute);
   await app.register(authRoutes);
 
-  await app.listen({ port : port });
+  await app.listen({ port, host });
 }
 
 bootstrap();
