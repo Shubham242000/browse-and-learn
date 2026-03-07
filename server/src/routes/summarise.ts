@@ -27,7 +27,8 @@ export async function summarizeRoute(app: FastifyInstance) {
 
     const ratings = await getUserSkills(userId);
 
-    reply.raw.setHeader("Content-Type", "text/event-stream");
+    reply.raw.setHeader("Content-Type", "text/event-stream"); // this enables SSE, server - sent events. 
+    // The client can listen to these events and update the UI in real time as the summary is generated.
     reply.raw.setHeader("Cache-Control", "no-cache");
     reply.raw.setHeader("Connection", "keep-alive");
 
