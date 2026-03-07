@@ -1,7 +1,0 @@
-.git
-.DS_Store
-docs
-extension
-server/node_modules
-server/.env
-**/*.log
